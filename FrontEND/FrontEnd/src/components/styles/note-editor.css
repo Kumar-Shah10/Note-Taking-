@@ -1,0 +1,303 @@
+/* ════════════════════════════════════════════════════════
+   NOTE EDITOR  —  note-editor.css
+   Tokens come from dashboard.css (:root variables)
+════════════════════════════════════════════════════════ */
+
+/* ── root shell ── */
+.ne-root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid var(--border-soft);
+  background: var(--bg);
+  animation: neIn .2s cubic-bezier(.22,1,.36,1);
+}
+@keyframes neIn {
+  from { opacity:0; transform:translateX(8px); }
+  to   { opacity:1; transform:translateX(0);   }
+}
+
+/* ── color accent bar ── */
+.ne-color-bar { height: 3px; flex-shrink: 0; opacity: .75; }
+
+/* ════ TOP BAR ════ */
+.ne-topbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0; flex-wrap: wrap;
+}
+.ne-back {
+  width: 30px; height: 30px; border-radius: 7px;
+  border: none; background: none; color: var(--text-muted);
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s; flex-shrink: 0;
+}
+.ne-back:hover { background: var(--bg-hover); color: var(--text-primary); }
+.ne-topbar-actions { display: flex; align-items: center; gap: 5px; margin-left: auto; flex-wrap: wrap; }
+
+.ne-action {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 10px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: none;
+  color: var(--text-muted); font-size: 12px; font-family: 'DM Sans', sans-serif;
+  cursor: pointer; white-space: nowrap;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.ne-action:hover      { background: var(--bg-hover); color: var(--text-primary); border-color: #3a3530; }
+.ne-action.active     { color: var(--gold); border-color: rgba(212,170,100,.35); background: var(--gold-dim); }
+.ne-action.danger:hover { color: var(--red); border-color: rgba(220,80,60,.3); background: var(--red-bg); }
+
+.ne-save {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: var(--radius-sm); border: none;
+  background: var(--gold); color: #0f0e0c;
+  font-size: 12px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer;
+  transition: background .2s, opacity .2s, transform .1s;
+}
+.ne-save:hover:not(:disabled) { background: var(--gold-hover); transform: translateY(-1px); }
+.ne-save:disabled { opacity: .35; cursor: default; }
+
+/* color picker */
+.ne-color-wrap { position: relative; }
+.ne-color-dot  { display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(255,255,255,.15); flex-shrink: 0; }
+.ne-color-menu {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 8px;
+  display: flex; gap: 6px; z-index: 60;
+  box-shadow: 0 8px 28px rgba(0,0,0,.45);
+  animation: popIn .15s ease;
+}
+@keyframes popIn { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
+.ne-color-opt { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform .15s, border-color .15s; }
+.ne-color-opt:hover    { transform: scale(1.2); }
+.ne-color-opt.selected { border-color: var(--text-primary); transform: scale(1.15); }
+
+/* ════ TOOLBAR ════ */
+.ne-toolbar {
+  display: flex; align-items: center;
+  padding: 5px 14px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-panel);
+  flex-shrink: 0; flex-wrap: wrap; gap: 2px;
+}
+.ne-tgroup { display: flex; align-items: center; gap: 1px; padding: 0 4px; }
+.ne-tgroup.sep { border-right: 1px solid var(--border); margin-right: 4px; }
+
+/* base toolbar button */
+.ne-tbtn {
+  height: 28px; min-width: 30px; padding: 0 6px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  /* instant response — no transition on the active state itself */
+  transition: background .1s, color .1s;
+}
+.ne-tbtn:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+/* ACTIVE — sunken highlight, matches image 1 */
+.ne-tbtn.active {
+  background: var(--bg-raised);
+  color: var(--gold);
+  border-color: rgba(212,170,100,.4);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.4);
+}
+
+/* label helpers */
+.tl           { font-size: 13px; font-weight: 500; line-height: 1; }
+.tl-bold      { font-weight: 700; }
+.tl-italic    { font-style: italic; }
+.tl-under     { text-decoration: underline; text-underline-offset: 2px; }
+.tl-strike    { text-decoration: line-through; }
+.tl-clear     { font-size: 11px; font-weight: 600; position: relative; opacity: .7; }
+
+/* ════ BODY (title + content) ════ */
+.ne-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  overflow: hidden;          /* children handle their own scroll */
+  padding: 22px 30px 0;
+  gap: 8px;
+}
+
+/* non-scrolling header area */
+.ne-header-area { flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; }
+
+.ne-title {
+  background: none; border: none; outline: none;
+  font-family: 'Lora', serif; font-size: 26px; font-weight: 600;
+  color: var(--text-primary); width: 100%;
+  border-bottom: 1px solid var(--border-soft); padding-bottom: 10px;
+  transition: border-color .2s;
+}
+.ne-title:focus        { border-bottom-color: var(--gold); }
+.ne-title::placeholder { color: var(--text-faint); }
+
+.ne-meta-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.ne-meta     { font-size: 11px; color: var(--text-faint); font-weight: 300; }
+.ne-saved    { color: var(--green); }
+.ne-unsaved  { color: var(--gold); }
+
+/* ════ RICH TEXT AREA ════ */
+.ne-content {
+  flex: 1; outline: none;
+  font-family: 'DM Sans', sans-serif; font-size: 14.5px; font-weight: 300;
+  color: var(--text-muted); line-height: 1.85;
+  overflow-y: auto; word-break: break-word; cursor: text; min-height: 0;
+  padding-bottom: 20px;
+}
+.ne-content:empty::before { content: attr(data-placeholder); color: var(--text-faint); pointer-events: none; }
+.ne-content::-webkit-scrollbar        { width: 4px; }
+.ne-content::-webkit-scrollbar-track  { background: transparent; }
+.ne-content::-webkit-scrollbar-thumb  { background: var(--border); border-radius: 10px; }
+
+.ne-content h1, .ne-content h2, .ne-content h3 { font-family: 'Lora', serif; color: var(--text-primary); }
+.ne-content h1 { font-size: 22px; margin: 16px 0 6px; }
+.ne-content h2 { font-size: 18px; margin: 12px 0 4px; }
+.ne-content h3 { font-size: 15px; margin: 10px 0 3px; }
+.ne-content p  { margin: 3px 0; }
+.ne-content strong    { color: var(--text-primary); font-weight: 600; }
+.ne-content em        { font-style: italic; color: var(--gold); }
+.ne-content u         { text-decoration: underline; text-decoration-color: rgba(212,170,100,.5); }
+.ne-content s         { text-decoration: line-through; opacity: .55; }
+.ne-content a         { color: var(--gold); text-decoration: underline; }
+.ne-content ul, .ne-content ol { padding-left: 20px; margin: 5px 0; }
+.ne-content li        { margin: 2px 0; }
+.ne-content ul li::marker { color: var(--gold); }
+.ne-content ol li::marker { color: var(--gold); font-weight: 600; }
+
+/* ════ TODO CARD — "My Plans" pink style ════ */
+.ne-todo-card {
+  flex: 1;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #f4b8b8;        /* pink outer */
+  padding: 10px;
+  gap: 8px;
+  margin-bottom: 16px;
+  /* subtle drop shadow like the image */
+  box-shadow: 0 4px 24px rgba(0,0,0,.12);
+}
+
+/* "MY PLANS" pill header */
+.ne-todo-header {
+  background: #fff5ee;
+  border-radius: 10px;
+  padding: 13px 20px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ne-todo-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: #3d2015;
+}
+
+/* cream checklist body */
+.ne-todo-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  background: #fff5ee;
+  border-radius: 12px;
+  overflow: hidden;           /* clips the scrollable rows cleanly */
+}
+
+/* progress bar strip */
+.ne-progress-wrap {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 16px 5px;
+  border-bottom: 1px solid rgba(160,100,80,.15);
+  flex-shrink: 0;
+}
+.ne-progress-track {
+  flex: 1; height: 3px;
+  background: rgba(160,100,80,.2); border-radius: 10px; overflow: hidden;
+}
+.ne-progress-fill {
+  height: 100%; background: #a06050; border-radius: 10px;
+  transition: width .4s cubic-bezier(.22,1,.36,1);
+}
+.ne-progress-label {
+  font-size: 10px; color: #a06050; font-family: 'DM Sans', sans-serif;
+  font-weight: 600; white-space: nowrap;
+}
+
+/* scrollable task list */
+.ne-todo-scroll {
+  flex: 1; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.ne-todo-scroll::-webkit-scrollbar       { width: 3px; }
+.ne-todo-scroll::-webkit-scrollbar-track { background: transparent; }
+.ne-todo-scroll::-webkit-scrollbar-thumb { background: rgba(160,100,80,.25); border-radius: 10px; }
+
+/* single task row */
+.ne-todo-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 16px;
+  min-height: 46px;
+  border-bottom: 1px solid rgba(160,100,80,.18);
+  transition: background .1s;
+  animation: rowIn .13s ease both;
+  flex-shrink: 0;
+}
+.ne-todo-row:last-child { border-bottom: none; }
+.ne-todo-row:hover { background: rgba(160,100,80,.05); }
+@keyframes rowIn {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+/* square checkbox — exactly like the image */
+.ne-checkbox {
+  width: 20px; height: 20px; flex-shrink: 0;
+  border: 2px solid #b07060;
+  border-radius: 5px; background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background .15s, border-color .15s;
+}
+.ne-checkbox:hover   { border-color: #3d2015; }
+.ne-checkbox.checked { background: #a06050; border-color: #a06050; color: #fff; }
+
+/* task text input */
+.ne-row-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 400;
+  color: #3d2015;
+}
+.ne-row-input::placeholder { color: #c8a898; }
+.ne-row-input.done         { text-decoration: line-through; color: #c8a898; }
+
+/* remove × button — visible only on row hover */
+.ne-row-remove {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: none; background: none; color: #c8a898;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  opacity: 0; flex-shrink: 0; padding: 0;
+  transition: opacity .15s, color .15s, background .15s;
+}
+.ne-todo-row:hover .ne-row-remove { opacity: 1; }
+.ne-row-remove:hover { color: #c0392b; background: rgba(192,57,43,.1); }
+
+/* add task button */
+.ne-todo-add {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  border: none;
+  border-top: 1px dashed rgba(160,100,80,.3);
+  background: transparent; color: #b07060;
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+  cursor: pointer; flex-shrink: 0;
+  transition: color .15s, background .15s;
+}
+.ne-todo-add:hover { color: #3d2015; background: rgba(160,100,80,.07); }
