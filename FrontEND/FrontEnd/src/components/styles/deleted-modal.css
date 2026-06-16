@@ -1,0 +1,442 @@
+/* ════════════════════════════════════════════════════════
+   DELETED NOTES  —  deleted-modal.css
+   Tokens come from dashboard.css (:root variables)
+════════════════════════════════════════════════════════ */
+
+/* ── full-screen backdrop ── */
+.dn-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  z-index: 200;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;   /* slides in from the right */
+  animation: dnFadeIn .2s ease;
+}
+
+@keyframes dnFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── slide-in panel (full height, ~480px wide) ── */
+.dn-panel {
+  width: min(480px, 100vw);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel, #1a1814);
+  border-left: 1px solid var(--border, #2e2a25);
+  animation: dnSlideIn .25s cubic-bezier(.22, 1, .36, 1);
+  overflow: hidden;
+}
+
+@keyframes dnSlideIn {
+  from { transform: translateX(32px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ════ HEADER ════ */
+.dn-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--border-soft, #242019);
+  flex-shrink: 0;
+}
+
+.dn-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dn-header-icon {
+  font-size: 22px;
+  color: var(--red, #e05252);
+  line-height: 1;
+}
+
+.dn-title {
+  margin: 0;
+  font-family: 'Lora', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, #f0ece4);
+  line-height: 1.2;
+}
+
+.dn-subtitle {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--text-faint, #5a5248);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.dn-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #2e2a25);
+  background: none;
+  color: var(--text-muted, #8a7f72);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s, color .15s;
+  flex-shrink: 0;
+}
+
+.dn-close:hover {
+  background: var(--bg-hover, #222018);
+  color: var(--text-primary, #f0ece4);
+}
+
+/* ════ BODY ════ */
+.dn-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dn-body::-webkit-scrollbar        { width: 4px; }
+.dn-body::-webkit-scrollbar-track  { background: transparent; }
+.dn-body::-webkit-scrollbar-thumb  { background: var(--border, #2e2a25); border-radius: 10px; }
+
+/* ── loading dots ── */
+.dn-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex: 1;
+  padding: 60px 0;
+}
+
+.dn-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold, #d4aa64);
+  animation: dnPulse 1.2s ease-in-out infinite;
+}
+
+.dn-dot:nth-child(2) { animation-delay: .2s; }
+.dn-dot:nth-child(3) { animation-delay: .4s; }
+
+@keyframes dnPulse {
+  0%, 100% { opacity: .25; transform: scale(.8); }
+  50%       { opacity: 1;   transform: scale(1);  }
+}
+
+/* ── empty state ── */
+.dn-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 24px;
+  gap: 12px;
+}
+
+.dn-empty-icon {
+  font-size: 32px;
+  color: var(--text-faint, #5a5248);
+  margin-bottom: 4px;
+}
+
+.dn-empty h3 {
+  margin: 0;
+  font-family: 'Lora', serif;
+  font-size: 17px;
+  color: var(--text-primary, #f0ece4);
+}
+
+.dn-empty p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-faint, #5a5248);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+  max-width: 280px;
+}
+
+/* ════ NOTE LIST ════ */
+.dn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* single deleted note card */
+.dn-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-raised, #1e1c17);
+  border: 1px solid var(--border, #2e2a25);
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: border-color .15s, background .15s;
+  animation: dnItemIn .2s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.dn-item:hover {
+  border-color: var(--border-soft, #3a3530);
+  background: var(--bg-hover, #222018);
+}
+
+@keyframes dnItemIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* thin color accent strip on the left */
+.dn-item-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 12px 0 0 12px;
+  opacity: .7;
+}
+
+/* text block */
+.dn-item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dn-item-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dn-item-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #f0ece4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.dn-badge {
+  font-size: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: var(--gold-dim, rgba(212,170,100,.12));
+  color: var(--gold, #d4aa64);
+  border: 1px solid rgba(212,170,100,.2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.dn-item-preview {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-faint, #5a5248);
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+}
+
+.dn-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dn-item-date {
+  font-size: 11px;
+  color: var(--text-faint, #5a5248);
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── action buttons ── */
+.dn-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+  align-items: flex-end;
+}
+
+/* base button */
+.dn-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background .15s, color .15s, border-color .15s, transform .1s;
+  white-space: nowrap;
+}
+
+.dn-btn:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+/* restore — gold */
+.dn-btn.restore {
+  background: var(--gold-dim, rgba(212,170,100,.12));
+  color: var(--gold, #d4aa64);
+  border-color: rgba(212,170,100,.25);
+}
+
+.dn-btn.restore:hover:not(:disabled) {
+  background: rgba(212,170,100,.22);
+  border-color: rgba(212,170,100,.45);
+  transform: translateY(-1px);
+}
+
+/* delete — muted red */
+.dn-btn.delete {
+  background: none;
+  color: var(--text-faint, #5a5248);
+  border-color: var(--border, #2e2a25);
+}
+
+.dn-btn.delete:hover {
+  color: var(--red, #e05252);
+  border-color: rgba(220, 80, 80, .3);
+  background: var(--red-bg, rgba(220, 80, 80, .08));
+}
+
+/* inline confirm row */
+.dn-confirm-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.dn-confirm-label {
+  font-size: 11px;
+  color: var(--red, #e05252);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+}
+
+.dn-btn.perm-yes {
+  background: var(--red-bg, rgba(220, 80, 80, .12));
+  color: var(--red, #e05252);
+  border-color: rgba(220, 80, 80, .3);
+}
+
+.dn-btn.perm-yes:hover:not(:disabled) {
+  background: rgba(220, 80, 80, .22);
+}
+
+.dn-btn.perm-no {
+  background: none;
+  color: var(--text-muted, #8a7f72);
+  border-color: var(--border, #2e2a25);
+}
+
+.dn-btn.perm-no:hover {
+  background: var(--bg-hover, #222018);
+  color: var(--text-primary, #f0ece4);
+}
+
+/* ════ FOOTER ════ */
+.dn-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-top: 1px solid var(--border-soft, #242019);
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.dn-footer-note {
+  font-size: 11.5px;
+  color: var(--text-faint, #5a5248);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.4;
+}
+
+.dn-close-btn {
+  padding: 7px 18px;
+  border-radius: 8px;
+  border: none;
+  background: var(--gold, #d4aa64);
+  color: #0f0e0c;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .2s, transform .1s;
+}
+
+.dn-close-btn:hover {
+  background: var(--gold-hover, #c49a50);
+  transform: translateY(-1px);
+}
+
+/* ── responsive: on very narrow screens panel takes full width ── */
+@media (max-width: 520px) {
+  .dn-panel {
+    width: 100vw;
+    border-left: none;
+  }
+}
+
+/* ── delete-all button — red-tinted, left side of footer ── */
+.dn-btn.delete-all {
+  background: var(--red-bg, rgba(220, 80, 80, .08));
+  color: var(--red, #e05252);
+  border-color: rgba(220, 80, 80, .25);
+  padding: 7px 14px;
+  font-size: 13px;
+}
+
+.dn-btn.delete-all:hover:not(:disabled) {
+  background: rgba(220, 80, 80, .16);
+  border-color: rgba(220, 80, 80, .45);
+}
+
+.dn-btn.delete-all:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+/* inline "Delete all X notes forever?" confirm row */
+.dn-confirm-all-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  flex: 1;
+}
